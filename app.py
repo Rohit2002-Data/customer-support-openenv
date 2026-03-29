@@ -6,7 +6,18 @@ from env.models import Action
 app = FastAPI()
 env = CustomerSupportEnv()
 
-# 🔹 RESET (POST only, strict JSON format)
+# ✅ ROOT (IMPORTANT FOR HUGGING FACE VALIDATION)
+@app.get("/")
+def home():
+    return {
+        "message": "Customer Support AI is running",
+        "endpoints": {
+            "reset": "/reset (POST)",
+            "step": "/step (POST)"
+        }
+    }
+
+# 🔹 RESET
 @app.post("/reset")
 def reset(dummy: dict = Body(default={})):
     obs = env.reset()
@@ -21,8 +32,7 @@ def reset(dummy: dict = Body(default={})):
         }
     })
 
-
-# 🔹 STEP (POST only, strict JSON format)
+# 🔹 STEP
 @app.post("/step")
 def step(action: Action):
     obs, reward, done, info = env.step(action)
