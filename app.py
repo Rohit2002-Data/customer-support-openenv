@@ -1,13 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Body
 from env.environment import CustomerSupportEnv
 from env.models import Action
 
 app = FastAPI()
 env = CustomerSupportEnv()
 
-
 @app.post("/reset")
-def reset():
+def reset(dummy: dict = Body(default={})):
     obs = env.reset()
     return {
         "observation": obs.model_dump()
@@ -19,7 +18,7 @@ def step(action: Action):
 
     return {
         "observation": obs.model_dump(),
-        "reward": reward,
-        "done": done,
+        "reward": float(reward),
+        "done": bool(done),
         "info": info
     }
